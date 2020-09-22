@@ -1,0 +1,40 @@
+﻿@page
+@model MySeasonice.Pages.Product.IndexModel
+@{
+    ViewData["Title"] = "Product Index";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h3>coming soon...</h3>
+@*<p>@ViewData["Hello"]</p>
+<p>@Model.Message</p>*@
+
+<div id="counter" style="display:none">
+    <h6>{{ TimeNow }}</h6>
+    <h6>{{ message }}</h6>
+    Counter: {{ counter }}
+
+<button class="btn btn-sm btn-dark" v-on:click="addCounter">Counter ++</button>
+</div>
+
+<script src="https://unpkg.com/vue@next"></script>
+<script type="text/javascript">
+    //vue 3.0 測試
+    const Counter = {
+        data() {
+            return {
+                counter: 0,
+                message: 'Hello Sea !!',
+                TimeNow: new Date().toLocaleString(),
+            }
+        },
+        methods: {
+            addCounter() {
+                this.counter += 1;
+            }
+        }
+    }
+
+    Vue.createApp(Counter).mount('#counter')
+
+</script>

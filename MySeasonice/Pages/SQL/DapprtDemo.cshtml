@@ -1,0 +1,57 @@
+﻿@page
+@model MySeasonice.Pages.SQL.DapprtDemoModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>EMP Profile</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EmpProfile[0].Dep_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmpProfile[0].EMP_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmpProfile[0].EMP_Account)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmpProfile[0].EMP_Name_TC)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmpProfile[0].JobTitle_TC)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.EmpProfile)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dep_Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EMP_Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EMP_Account)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EMP_Name_TC)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JobTitle_TC)
+                </td>
+                <td>
+                    @*<a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

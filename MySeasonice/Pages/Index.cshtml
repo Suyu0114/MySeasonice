@@ -1,0 +1,179 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+
+@{
+    ViewData["Title"] = "Home page";
+}
+<link href="~/css/myseasonic_index.css" rel="stylesheet" />
+
+@if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+{
+    @*<div class="row text-center">
+        <div class="col-md-12">
+            <h1>Hello @HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "FullName")?.Value!</h1>
+            <p>Username: @HttpContextAccessor.HttpContext.User.Identity.Name</p>
+            <p>@Model.UserName_Claim</p>
+        </div>
+    </div>*@
+}
+@*else
+    {
+        <div class="text-center">
+            <h1 class="display-4">Welcome</h1>
+            <p></p>
+        </div>
+    }*@
+
+<div id="Vue_index" class="container-fluid" style="margin-top:30px">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="section-title">
+                <img class="rounded mr-2 d-block float-right" width="20" src="~/image/icon/contacts.svg" /><h6>分機/職代查詢 </h6>
+            </div>
+            <div class="shadow p-3 mb-5 bg-Isabelline rounded">
+                <form method="POST" onsubmit="return false">
+                    <div class="form-row">
+                        <div class="col-8">
+                            <input class="form-control form-control-sm" type="text" placeholder="Name" v-model="EMP_SearchString">
+                        </div>
+                        <div class="col-4">
+                            <input class="btn btn-secondary btn-sm" type="button" value="Search" v-on:click="ClickEMP_Search()" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="section-title">
+                <img class="rounded mr-2 d-block float-right" width="20" src="~/image/icon/external_link.svg" /><h6>常用連結</h6>
+            </div>
+            <div class="shadow mb-3 bg-Isabelline rounded">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://192.168.2.29/ehrportal" target="_blank">Sea eHR</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://192.168.2.38/seasonic" target="_blank">Sea PLM</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://seasonic.com/" target="_blank">SeaSonic.com</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="col-lg-8">
+
+            @*  通知中心  *@
+            <div class="section-title">
+                <img class="rounded mr-2 d-block float-right" width="20" src="~/image/icon/scroll.svg" /><h6>Notification Center</h6>
+            </div>
+            <div class="shadow p-3 mb-5 bg-Isabelline rounded">
+                <h6>Coming Soon...</h6>
+            </div>
+        </div>
+    </div>
+
+    <div id="EMP_SearchModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Employee Info</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="EMP_Detail table-responsive-md">
+                        <table class="table table-hover font-weight-light text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        @Html.DisplayNameFor(model => model.List_EmpProfile[0].EMP_Id)
+                                    </th>
+                                    <th scope="col">
+                                        @Html.DisplayNameFor(model => model.List_EmpProfile[0].EMP_Account)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.List_EmpProfile[0].EMP_Name_TC)
+                                    </th>
+                                    <th scope="col">
+                                        @Html.DisplayNameFor(model => model.List_EmpProfile[0].Department)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.List_EmpProfile[0].Dep_Id)
+                                    </th>
+                                    <th scope="col">
+                                        @Html.DisplayNameFor(model => model.List_EmpProfile[0].JobTitle_TC)
+                                    </th>
+                                    <th scope="col">
+                                        @Html.DisplayNameFor(model => model.List_EmpProfile[0].Office_phone)
+                                    </th>
+                                    <th scope="col">
+                                        @Html.DisplayNameFor(model => model.List_EmpProfile[0].Email)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="emp in List_EMP">
+                                    <td>{{ emp.EMP_Id }}</td>
+                                    <td>{{ emp.FST_Name }} {{ emp.LST_Name }} </td>
+                                    <td>{{ emp.EMP_Name_TC }}</td>
+                                    <td>{{ emp.Department }}</td>
+                                    <td>{{ emp.Dep_Id }}</td>
+                                    <td>{{ emp.JobTitle_TC }}</td>
+                                    <td>{{ emp.Office_phone }}</td>
+                                    <td>{{ emp.Email }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        var My_Vue = new Vue({
+            el: '#Vue_index',
+            data: {
+                EMP_SearchString: '',
+                List_EMP: '',
+            },
+            methods: {
+                ClickEMP_Search: function () {
+                    $.ajax({
+                        method: "post",
+                        url: "Index?handler=EMP_Search",
+                        data: {
+                            EMP_SearchString: My_Vue.EMP_SearchString,
+                        },
+                        //加上X-CSRF-TOKEN header
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRF-TOKEN",
+                                $('input:hidden[name="__RequestVerificationToken"]').val());
+                        },
+                        error: function (xhr, status, err) {
+                            alert(err);
+                        }
+                    }).done(function (result) {
+                        My_Vue.List_EMP = result;
+                        $('#EMP_SearchModal').modal('show')
+                    });
+
+                },
+            },
+        })
+
+
+    </script>
+
+}
